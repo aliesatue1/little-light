@@ -659,6 +659,9 @@
       audioEl.load();
       audioEl.play().catch(e => console.log('Audio autoplay prevented, ready to play:', e));
       document.getElementById('btn-audio-toggle').innerText = '⏸';
+
+      // Catat telemetry analitik
+      logMediaEvent(null, audioTitle, 'audio', 'play');
     }
 
     function togglePlayAudio() {
@@ -682,6 +685,44 @@
       const audioEl = document.getElementById('active-audio-player');
       audioEl.pause();
       document.getElementById('mini-audio-player').classList.add('translate-y-32');
+    }
+
+    // TELEMETRY & ANALITIK KONTEN (LOG PEMUTARAN & PERANGKAT OTOMATIS)
+    function logMediaEvent(mediaId, contentTitle, mediaType, action) {
+      const ua = navigator.userAgent || '';
+      let deviceType = 'Desktop (Windows)';
+      if (/Android/i.test(ua)) deviceType = 'Mobile (Android)';
+      else if (/iPhone|iPad|iPod/i.test(ua)) deviceType = 'Mobile (iOS)';
+      else if (/Macintosh|Mac OS X/i.test(ua)) deviceType = 'Desktop (Mac)';
+      else if (/Linux/i.test(ua)) deviceType = 'Desktop (Linux)';
+
+      let browser = 'Chrome';
+      if (/Lemur/i.test(ua)) browser = 'Lemur Browser';
+      else if (/SamsungBrowser/i.test(ua)) browser = 'Samsung Internet';
+      else if (/Edg/i.test(ua)) browser = 'Microsoft Edge';
+      else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = 'Apple Safari';
+      else if (/Firefox/i.test(ua)) browser = 'Mozilla Firefox';
+
+      const payload = {
+        media_id: (mediaId && mediaId.length > 20) ? mediaId : null,
+        content_title: contentTitle || 'Tanpa Judul',
+        media_type: mediaType,
+        device_type: deviceType,
+        browser: browser,
+        view_type: action || 'play'
+      };
+
+      try {
+        supabaseClient.from('media_analytics').insert([payload]).then(({ error }) => {
+          if (error) console.log('Analytics sync notice:', error.message);
+        });
+      } catch (e) {}
+
+      try {
+        const cache = JSON.parse(localStorage.getItem('littlelight_analytics') || '[]');
+        cache.unshift({ ...payload, created_at: new Date().toISOString() });
+        localStorage.setItem('littlelight_analytics', JSON.stringify(cache.slice(0, 200)));
+      } catch (e) {}
     }
 
     // REAL VIDEO MODAL PLAYER
@@ -789,6 +830,9 @@
       if (extLink) extLink.href = `https://drive.google.com/file/d/${driveId}/view`;
 
       document.getElementById('video-modal').classList.remove('hidden');
+
+      // Catat telemetry analitik video
+      logMediaEvent(item ? item.id : null, item ? item.title : identifier, 'video', 'play');
     }
 
     function closeVideoModal() {
@@ -818,6 +862,10 @@
       frame.src = `https://drive.google.com/file/d/${driveId}/preview`;
       link.href = `https://drive.google.com/file/d/${driveId}/view`;
       document.getElementById('pdf-modal').classList.remove('hidden');
+
+      // Catat telemetry analitik pembacaan PDF
+      const mediaType = title.toLowerCase().includes('renungan') ? 'renungan' : 'pdf';
+      logMediaEvent(null, title, mediaType, 'read');
     }
 
     function closePdfReader() {
