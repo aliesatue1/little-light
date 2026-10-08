@@ -325,23 +325,28 @@
     </div>
   </div>
 
-  <!-- VIDEO MODAL POPUP (REAL HTML5 VIDEO PLAYER) -->
-  <div id="video-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 rounded-3xl overflow-hidden max-w-4xl w-full border border-white/10 shadow-2xl space-y-4 p-5 text-white">
+  <!-- VIDEO MODAL POPUP (UNIVERSAL STREAMING PLAYER) -->
+  <div id="video-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 md:p-6 hidden">
+    <div class="bg-slate-900 rounded-3xl overflow-hidden max-w-4xl w-full border border-white/10 shadow-2xl space-y-4 p-4 md:p-5 text-white">
       <div class="flex items-center justify-between pb-3 border-b border-white/10">
         <div>
           <span class="text-xs font-bold text-amber-400">Panggung Renungan Video Anak • Little Light</span>
-          <h3 id="modal-video-title" class="font-kids font-extrabold text-lg text-white">Dididik Karena Disayang</h3>
+          <h3 id="modal-video-title" class="font-kids font-extrabold text-base md:text-lg text-white">Dididik Karena Disayang</h3>
           <p class="text-xs text-slate-400 mt-0.5">Tokoh Boneka: Guneo (lincah), Lili (lembut), Joana (bijak & ayat Alkitab)</p>
         </div>
-        <button onclick="closeVideoModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold transition-colors">
-          ✕
-        </button>
+        <div class="flex items-center gap-2">
+          <a id="video-external-link" href="" target="_blank" class="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-colors">
+            <span>Buka di Tab Baru</span> ↗
+          </a>
+          <button onclick="closeVideoModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold transition-colors">
+            ✕
+          </button>
+        </div>
       </div>
 
-      <!-- Real HTML5 Video Player -->
+      <!-- Universal Video Player Frame (Google Drive Direct Embed) -->
       <div class="aspect-video bg-black rounded-2xl relative overflow-hidden border border-white/10 shadow-inner flex items-center justify-center">
-        <video id="active-video-player" controls playsinline class="w-full h-full object-contain rounded-2xl"></video>
+        <iframe id="active-video-frame" src="" class="w-full h-full border-0 rounded-2xl" allow="autoplay; fullscreen" allowfullscreen></iframe>
       </div>
 
       <div class="space-y-2">
@@ -351,7 +356,7 @@
       </div>
 
       <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
-        <span class="text-amber-300 font-semibold">Format: MP4 H.264 (+faststart) • Siap Putar</span>
+        <span class="text-amber-300 font-semibold">⚡ Streaming Multi-Resolusi Adaptif (Drive CDN)</span>
         <button onclick="closeVideoModal()" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-blue-950 font-bold transition-colors">
           Selesai Menonton
         </button>
@@ -682,40 +687,57 @@
       if (firstVid) openVideoDetail(firstVid.id);
     }
 
-    // PEMETAAN VIDEO PRESISI 100% SESUAI JUDUL ASLI
-    const VIDEO_FILE_MAP = [
-      { key: 'Dididik Karena Disayang', file: '4_Oktober 2026_Week 1_Dididik Karena Disayang_1080p.mp4' },
-      { key: 'Jangan Pura-Pura Ngga Dengar', file: '4_Oktober 2026_Week 2_Jangan Pura-Pura Ngga Dengar_1080p.mp4' },
-      { key: 'Ditegur Lewat Teman', file: '4_Oktober 2026_Week 3_Ditegur Lewat Teman_1080p.mp4' },
-      { key: 'Hatiku Tanah yang Subur', file: '3-September 2026_Week 1_Hatiku Tanah yang Subur_1080p.mp4' },
-      { key: 'Nasihat Itu Tanda Sayang', file: '3-September 2026_Week 2_Nasihat Itu Tanda Sayang _1080p.mp4' },
-      { key: 'Buku Petunjuk Hebat', file: '3-September 2026_Week 3_Buku Petunjuk Hebat_1080p.mp4' },
-      { key: 'Jangan Cuma Hafal', file: '3-September 2026_Week 4_Jangan Cuma Hafal, Ayo Lakukan!_1080p.mp4' },
-      { key: 'Tak Pernah Sama Lagi', file: 'Agustus 2026_Week 1_Tak Pernah Sama Lagi_1080p.mp4' },
-      { key: 'Hati yang Segar Kembali', file: 'Agustus 2026_Week 2_Hati yang Segar Kembali_1080p.mp4' },
-      { key: 'Jadi Anak yang Baru', file: 'Agustus 2026_Week 3_Jadi Anak yang Baru_1080p.mp4' },
-      { key: 'Berani Beda Nggak Ikut-ikutan', file: 'Agustus 2026_Week 4_Berani Beda Nggak Ikut-ikutan_1080p.mp4' },
-      { key: 'Senter Kehidupan', file: 'Agustus 2026_Week 5_Senter Kehidupan_1080p.mp4' },
-      { key: 'Mengapa harus memikirkan apa yang baik', file: '1-Juli 2026_Week 1_Mengapa harus memikirkan apa yang baik_1080p.mp4' },
-      { key: 'Hati yang Keras Seperti Batu', file: 'Juli 2026_Week 2_Hati yang Keras Seperti Batu_1080p.mp4' },
-      { key: 'Minta Maaf yang Sungguh-Sungguh', file: 'Juli 2026_Week 3_Minta Maaf yang Sungguh-Sungguh_1080p.mp4' },
-      { key: 'Berani Jujur Walau Sendirian', file: 'Juli 2026_Week 4_Berani Jujur Walau Sendirian_1080p.mp4' }
-    ];
+    // KAMUS RESMI MASTER ID GOOGLE DRIVE UNTUK STREAMING CLOUD RESMI
+    const DRIVE_MEDIA_MAP = {
+      // 16 VIDEO RENUNGAN MP4 DI GOOGLE DRIVE
+      'dididik karena disayang': '1JOF9ze8rD5TRzxYfCebQQeQSk6RIH3bc',
+      'jangan pura-pura ngga dengar': '1ZqW5lbgJAbKQcYL_5uvPincZ3QA2v6m4',
+      'ditegur lewat teman': '1_jXcx0R8hChgSaGG6h4nF2RQ0IHxBKUg',
+      'hatiku tanah yang subur': '1YiC3ssm5KFo5JNkXq9MEoOKNQAGmx0RU',
+      'nasihat itu tanda sayang': '1KMaa83M7EVYfk5cFTSoAYZD5zp5iog2Z',
+      'buku petunjuk hebat': '1V09Cy-2by5JvVrV9DQ6mlVrfKvPyY6v_',
+      'jangan cuma hafal': '1t_bpO8HG_ZweWsmv1vG8blJ_IZM0Ca-7',
+      'tak pernah sama lagi': '13Fff6bjMmis13GAw3wToqeL82N7d6GNZ',
+      'hati yang segar kembali': '1Kg59Tvoysw7BFHrrIf8ArBqdZ2-k33eH',
+      'jadi anak yang baru': '17ujrK0yJj1j1z78bnl-3tEktr_9s6PmA',
+      'berani beda nggak ikut-ikutan': '13Chm_PWDfHiCm6ZsMuOV5WB94pgypzF5',
+      'senter kehidupan': '1Mb7WItINNKjcLSubS66SXTokIT7h3v6P',
+      'mengapa harus memikirkan apa yang baik': '1RVC305KaWBOflmiXHeMLxdgREdED2CLL',
+      'hati yang keras seperti batu': '1KgOISHq0lBTpWPTBo-wYP5PaF7Q8deY6',
+      'minta maaf yang sungguh-sungguh': '1ipy1yha6zmE1V7rmGavVWTe5NvPQQ6II',
+      'berani jujur walau sendirian': '1TcljPr-nY0OCgfO10D6uJZrNsvV5vtde',
+      
+      // 12 MINGGU ALKITAB LITERASI 3D CLAYMATION PDF DI GOOGLE DRIVE
+      'minggu_01.pdf': '1-0dZguKCa6qk14qwetoDEnN6xoQzKoFw',
+      'minggu_02.pdf': '1cU_IEtg9bfZAGGcIlwHl6Ip94j5xbiAa',
+      'minggu_03.pdf': '1LXYOeW3Mg_oW3ttaZisEE3N0C_vz3_Nz',
+      'minggu_04.pdf': '1hsRAa8P-KLeHmS0-IMdFTbyOHvF70kbn',
+      'minggu_05.pdf': '1loIExYMeTuoqsxP4bqKPd54D5NYNEmpm',
+      'minggu_06.pdf': '1Bx_D_KXmStIxVQhYGYV5GOdMD0RVInH0',
+      'minggu_07.pdf': '1GmkUvu_RZ6FS4ftQdiq7mw-sSoNSUouz',
+      'minggu_08.pdf': '1LJ3e0mOrLUIUj0-XRizl43Nx3F6anxpK',
+      'minggu_09.pdf': '14iWBltvdqGeUOKUBQrEZNFMaASXNEdF1',
+      'minggu_10.pdf': '1-OZWRTJA-_xmJVhGg-wroUW2huLxFRhy',
+      'minggu_11.pdf': '14grG8uqllpgMZjTD8R9gfoce2c-_TPDS',
+      'minggu_12.pdf': '1wSIB2rqMqhLqw7pgx4NDAVKTwQczi79z',
+      
+      // BUKU RENUNGAN MASTER PDF DI GOOGLE DRIVE
+      'renungan_master.pdf': '1Kt0Zre-xT2YJaGd7rGDkrah-jcTvTDf5'
+    };
 
     function openVideoDetail(identifier) {
-      // Cari berdasarkan id UUID, drive_file_id, atau kata kunci judul
       let item = allMedia.find(m => 
         m.id === identifier || 
         m.drive_file_id === identifier || 
         (m.title && m.title.toLowerCase().includes(String(identifier).toLowerCase()))
       );
 
-      // Fallback jika belum selesai dimuat dari Supabase
       if (!item) {
         if (identifier === 'vid-2026-10-w1' || String(identifier).includes('Dididik')) {
           item = {
             title: 'Dididik Karena Disayang',
-            description: 'Amsal 3:11-12. Robot mainan Guneo disita Ms Guru karena dilempar dekat jendela kaca. Joana & Lili mengingatkannya bahwa didikan dan teguran guru/orang tua adalah bukti kasih sayang Tuhan.'
+            description: 'Amsal 3:11-12. Robot mainan Guneo disita Ms Guru karena dilempar dekat jendela kaca. Joana & Lili mengingatkannya bahwa didikan dan teguran guru/orang tua adalah bukti kasih sayang Tuhan.',
+            drive_file_id: '1JOF9ze8rD5TRzxYfCebQQeQSk6RIH3bc'
           };
         } else {
           item = { title: 'Renungan Video Little Light', description: '' };
@@ -725,49 +747,61 @@
       document.getElementById('modal-video-title').innerText = item.title;
       document.getElementById('modal-video-desc').innerText = item.description || '';
 
-      const videoPlayer = document.getElementById('active-video-player');
-      
-      // Pencocokan tepat file video berdasarkan kata kunci judul
       const targetTitle = (item.title || '').toLowerCase();
-      const matched = VIDEO_FILE_MAP.find(v => targetTitle.includes(v.key.toLowerCase()));
+      let driveId = item.drive_file_id;
 
-      if (matched) {
-        console.log('Memutar file video tepat:', matched.file);
-        videoPlayer.src = './videos/' + encodeURIComponent(matched.file);
-      } else {
-        console.warn('Judul belum terpetakan, gunakan video default:', item.title);
-        videoPlayer.src = './videos/' + encodeURIComponent('4_Oktober 2026_Week 1_Dididik Karena Disayang_1080p.mp4');
+      if (!driveId || driveId.startsWith('vid-') || driveId.length < 20) {
+        for (const [key, id] of Object.entries(DRIVE_MEDIA_MAP)) {
+          if (targetTitle.includes(key.toLowerCase())) {
+            driveId = id;
+            break;
+          }
+        }
       }
+      if (!driveId) driveId = '1JOF9ze8rD5TRzxYfCebQQeQSk6RIH3bc';
+
+      const videoFrame = document.getElementById('active-video-frame');
+      videoFrame.src = `https://drive.google.com/file/d/${driveId}/preview`;
+
+      const extLink = document.getElementById('video-external-link');
+      if (extLink) extLink.href = `https://drive.google.com/file/d/${driveId}/view`;
 
       document.getElementById('video-modal').classList.remove('hidden');
-      videoPlayer.play().catch(e => console.log('Autoplay handled:', e));
     }
 
     function closeVideoModal() {
-      const videoPlayer = document.getElementById('active-video-player');
-      videoPlayer.pause();
+      const videoFrame = document.getElementById('active-video-frame');
+      if (videoFrame) videoFrame.src = '';
       document.getElementById('video-modal').classList.add('hidden');
     }
 
-    // REAL PDF READER FUNCTIONS
-    function openPdfReader(fileName, title) {
+    // REAL PDF READER FUNCTIONS (GOOGLE DRIVE PREVIEW CLOUD DELIVERY)
+    function openPdfReader(fileNameOrDriveId, title) {
       document.getElementById('pdf-modal-title').innerText = title;
       const frame = document.getElementById('active-pdf-frame');
       const link = document.getElementById('pdf-download-link');
-      frame.src = './docs/' + fileName + '#toolbar=1&navpanes=0';
-      link.href = './docs/' + fileName;
+
+      let driveId = null;
+      if (fileNameOrDriveId && fileNameOrDriveId.length > 20 && !fileNameOrDriveId.includes('.')) {
+        driveId = fileNameOrDriveId;
+      } else {
+        const cleanName = (fileNameOrDriveId || '').split('#')[0];
+        driveId = DRIVE_MEDIA_MAP[cleanName] || DRIVE_MEDIA_MAP['minggu_02.pdf'];
+      }
+
+      frame.src = `https://drive.google.com/file/d/${driveId}/preview`;
+      link.href = `https://drive.google.com/file/d/${driveId}/view`;
       document.getElementById('pdf-modal').classList.remove('hidden');
     }
 
     function closePdfReader() {
       const frame = document.getElementById('active-pdf-frame');
-      frame.src = '';
+      if (frame) frame.src = '';
       document.getElementById('pdf-modal').classList.add('hidden');
     }
 
-    function openWeeklyPdf(week, phase, start, end) {
-      const file = `renungan_fase_bc_master.pdf#page=${start}`;
-      openPdfReader(file, `Renungan ${phase} — Minggu ${week} (Rentang Halaman ${start}–${end})`);
+    function openWeeklyPdfPage(pageNum, title) {
+      openPdfReader('renungan_master.pdf', `Buku Renungan — ${title} (Halaman ${pageNum})`);
     }
 
     // Load data on startup
