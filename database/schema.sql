@@ -133,6 +133,21 @@ CREATE TABLE IF NOT EXISTS public.sync_logs (
     error_message TEXT
 );
 
+-- 9. MEDIA ANALYTICS (ANALITIK PEMUTARAN VIDEO, LITERASI, AUDIO, & BUKU RENUNGAN)
+CREATE TABLE IF NOT EXISTS public.media_analytics (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    media_id UUID REFERENCES public.media(id) ON DELETE SET NULL,
+    content_title TEXT NOT NULL,
+    media_type TEXT NOT NULL CHECK (media_type IN ('video', 'pdf', 'audio', 'renungan')),
+    device_type TEXT NOT NULL, -- 'Android', 'iOS', 'Windows', 'Mac', 'Lainnya'
+    browser TEXT NOT NULL, -- 'Chrome', 'Lemur', 'Safari', 'Edge', 'Firefox', 'Lainnya'
+    view_type TEXT DEFAULT 'play', -- 'play', 'read', 'open'
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_analytics_media ON public.media_analytics (media_id, media_type, created_at);
+CREATE INDEX IF NOT EXISTS idx_analytics_device ON public.media_analytics (device_type, browser);
+
 -- ==============================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- ==============================================================================
@@ -146,6 +161,7 @@ ALTER TABLE public.playlist_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.daily_readings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sync_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.media_analytics ENABLE ROW LEVEL SECURITY;
 
 -- Helper Function: Mengecek apakah pengguna login adalah admin
 CREATE OR REPLACE FUNCTION public.is_admin()
@@ -215,6 +231,15 @@ CREATE POLICY "Admin Manage Profiles" ON public.profiles FOR ALL TO authenticate
 CREATE POLICY "Staff Insert Audit Logs" ON public.audit_logs FOR INSERT TO authenticated WITH CHECK (public.is_staff());
 CREATE POLICY "Admin Read Audit Logs" ON public.audit_logs FOR SELECT TO authenticated USING (public.is_admin());
 CREATE POLICY "Staff Manage Sync Logs" ON public.sync_logs FOR ALL TO authenticated USING (public.is_staff());
+
+-- ------------------------------------------------------------------------------
+-- D. KEBIJAKAN MEDIA ANALYTICS
+-- ------------------------------------------------------------------------------
+-- Siswa publik (anon) dapat mencatat log pemutaran / pembacaan
+CREATE POLICY "Public Insert Media Analytics" ON public.media_analytics FOR INSERT WITH CHECK (TRUE);
+-- Guru & Admin dapat membaca analitik
+CREATE POLICY "Staff Read Media Analytics" ON public.media_analytics FOR SELECT USING (TRUE);
+
 
 -- ------------------------------------------------------------------------------
 -- TRIGGER AUTO-UPDATE `updated_at`

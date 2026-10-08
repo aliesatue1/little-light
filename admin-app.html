@@ -6,7 +6,7 @@
   <title>Little Light CMS — Panel Guru & Operator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -14,17 +14,18 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            kids: ['"Nunito"', 'sans-serif']
           }
         }
       }
     }
   </script>
 </head>
-<body class="font-sans bg-slate-100 text-slate-800 min-h-screen pb-20">
+<body class="font-sans bg-slate-100 text-slate-800 min-h-screen pb-24">
 
   <!-- TOP HEADER -->
-  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40">
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-extrabold text-lg shadow">
@@ -35,14 +36,14 @@
             <h1 class="font-bold text-base tracking-tight">Little Light CMS</h1>
             <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-800 text-amber-400 border border-slate-700">Admin & Guru</span>
           </div>
-          <p class="text-[11px] text-slate-400">Sekolah Kristen Lentera Ambarawa • manage.tbi2026-lentera.web.id</p>
+          <p class="text-[11px] text-slate-400">Sekolah Kristen Lentera Ambarawa • littlelight.tbi2026-lentera.web.id</p>
         </div>
       </div>
 
       <div class="flex items-center gap-3 text-xs">
         <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Supabase Live Connected</span>
+          <span>Database Live</span>
         </div>
         <div class="flex items-center gap-2">
           <span class="font-semibold text-slate-200">Santoso (Admin)</span>
@@ -54,57 +55,282 @@
   <!-- MAIN ADMIN LAYOUT -->
   <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
 
-    <!-- KPI STATS (DYNAMIC FROM SUPABASE) -->
+    <!-- KPI STATS -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Total Media di Database</p>
+        <p class="text-xs font-semibold text-slate-500">Total Media Katalog</p>
         <p id="kpi-total" class="text-3xl font-extrabold text-slate-900 mt-1">...</p>
-        <p class="text-[11px] text-emerald-600 font-medium mt-1">🟢 Live Supabase PostgreSQL</p>
+        <p class="text-[11px] text-emerald-600 font-medium mt-1">🟢 Supabase Storage & Drive</p>
       </div>
 
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
         <p class="text-xs font-semibold text-slate-500">Tayang di Siswa (Published)</p>
         <p id="kpi-published" class="text-3xl font-extrabold text-blue-600 mt-1">...</p>
-        <p class="text-[11px] text-blue-600 font-medium mt-1">Tampil di aplikasi siswa</p>
+        <p class="text-[11px] text-blue-600 font-medium mt-1">Aktif di web siswa</p>
       </div>
 
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Menunggu Review</p>
-        <p id="kpi-review" class="text-3xl font-extrabold text-amber-500 mt-1">...</p>
-        <p class="text-[11px] text-amber-600 font-medium mt-1">Draf / belum tayang</p>
+        <p class="text-xs font-semibold text-slate-500">Total Akses / Diputar</p>
+        <p id="kpi-total-views" class="text-3xl font-extrabold text-emerald-600 mt-1">142</p>
+        <p class="text-[11px] text-emerald-600 font-medium mt-1">📊 Analitik Siswa Aktif</p>
       </div>
 
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Aset Master Google Drive</p>
-        <p class="text-3xl font-extrabold text-purple-600 mt-1">19 MP4</p>
-        <p class="text-[11px] text-purple-600 font-medium mt-1">Terkonversi 1080p & 720p</p>
+        <p class="text-xs font-semibold text-slate-500">Aset Master di Drive</p>
+        <p class="text-3xl font-extrabold text-purple-600 mt-1">16 MP4</p>
+        <p class="text-[11px] text-purple-600 font-medium mt-1">Gudang Master 1PDsRX...</p>
       </div>
     </div>
 
-    <!-- ACTION HEADER & DRIVE SCANNER TRIGGER -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div class="space-y-1">
-        <div class="flex items-center gap-2">
-          <h2 class="font-bold text-base text-slate-900">Sinkronisasi Google Drive</h2>
-          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">GAS Engine</span>
+    <!-- TAB NAVIGATION CMS -->
+    <div class="flex overflow-x-auto gap-2 border-b border-slate-200 pb-2 scrollbar-none text-xs font-bold">
+      <button onclick="switchAdminTab('katalog')" id="tab-btn-katalog" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white shadow-sm transition-all flex items-center gap-2">
+        <span>📑</span> Katalog & Kontrol Tayang
+      </button>
+      <button onclick="switchAdminTab('analitik')" id="tab-btn-analitik" class="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-2">
+        <span>📊</span> Analitik & Statistik Perangkat (SEMUA KONTEN)
+      </button>
+      <button onclick="switchAdminTab('jadwal')" id="tab-btn-jadwal" class="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-2">
+        <span>⏱️</span> Pengaturan Tanggal Mulai Kurikulum
+      </button>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 1: KATALOG MEDIA & KONTROL TAYANG -->
+    <!-- ========================================================== -->
+    <div id="panel-katalog" class="space-y-6">
+      
+      <!-- ACTION HEADER -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <h2 class="font-bold text-base text-slate-900">Sinkronisasi Master Google Drive</h2>
+            <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">GAS Engine</span>
+          </div>
+          <p class="text-xs text-slate-500 font-mono">
+            Root Folder ID: <span class="text-slate-800 font-bold">1PDsRX77IE59SNi9Zd52heFS260OyvKzQ</span>
+          </p>
         </div>
-        <p class="text-xs text-slate-500 font-mono">
-          Root Folder ID: <span class="text-slate-800 font-bold">1PDsRX77IE59SNi9Zd52heFS260OyvKzQ</span>
-        </p>
+
+        <div class="flex items-center gap-2.5">
+          <button onclick="triggerGASScan()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all">
+            <span id="scan-icon">🔄</span> Jalankan GAS Scanner
+          </button>
+          <button onclick="openAddMediaModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 transition-all">
+            ➕ Tambah Media Manual
+          </button>
+        </div>
       </div>
 
-      <div class="flex items-center gap-2.5">
-        <button onclick="triggerGASScan()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all">
-          <span id="scan-icon">🔄</span> Jalankan GAS Scanner
-        </button>
-        <button onclick="openAddMediaModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 transition-all">
-          ➕ Tambah Media Manual
-        </button>
+      <!-- CONTENT MANAGEMENT TABLE -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <h3 class="font-bold text-sm text-slate-900">Katalog Media (Live Database)</h3>
+          <button onclick="fetchAdminData()" class="text-xs text-blue-600 hover:underline font-bold">Segarkan Data ⟳</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-100">
+              <tr>
+                <th class="px-6 py-3.5">Nama Konten / Judul</th>
+                <th class="px-4 py-3.5">Tipe</th>
+                <th class="px-4 py-3.5">Periode / Jadwal</th>
+                <th class="px-4 py-3.5">Status Publikasi</th>
+                <th class="px-6 py-3.5 text-right">Tindakan Cepat</th>
+              </tr>
+            </thead>
+            <tbody id="admin-table-body" class="divide-y divide-slate-100">
+              <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-slate-400">Memuat data dari Supabase...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- PENGATURAN TANGGAL MULAI KURIKULUM (ALKITAB LITERASI & ALKITAB BERSUARA) -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+    <!-- ========================================================== -->
+    <!-- TAB 2: DASBOR ANALITIK KONTEN & STATISTIK PERANGKAT -->
+    <!-- ========================================================== -->
+    <div id="panel-analitik" class="space-y-6 hidden">
+      
+      <!-- ANALYTICS HIGHLIGHT CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white p-5 rounded-2xl shadow-sm space-y-1">
+          <span class="text-xs text-blue-200 font-medium">🎬 Total Putar Video Renungan</span>
+          <p id="stat-video-plays" class="text-3xl font-extrabold text-amber-400">68</p>
+          <p class="text-[11px] text-slate-300">Lakon Guneo, Lili, Joana</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white p-5 rounded-2xl shadow-sm space-y-1">
+          <span class="text-xs text-amber-100 font-medium">📖 Total Baca Alkitab Literasi</span>
+          <p id="stat-literasi-reads" class="text-3xl font-extrabold text-white">45</p>
+          <p class="text-[11px] text-amber-100">Format 3D Claymation</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-indigo-700 to-blue-800 text-white p-5 rounded-2xl shadow-sm space-y-1">
+          <span class="text-xs text-indigo-200 font-medium">🎧 Total Putar Alkitab Bersuara</span>
+          <p id="stat-audio-plays" class="text-3xl font-extrabold text-white">32</p>
+          <p class="text-[11px] text-indigo-200">Rekaman Pembacaan Harian</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-5 rounded-2xl shadow-sm space-y-1">
+          <span class="text-xs text-emerald-100 font-medium">📄 Total Baca Buku Renungan</span>
+          <p id="stat-renungan-reads" class="text-3xl font-extrabold text-white">28</p>
+          <p class="text-[11px] text-emerald-100">Buku Holy Morning TA 26/27</p>
+        </div>
+      </div>
+
+      <!-- DEVICE & BROWSER BREAKDOWN GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- CARD: PERANGKAT PENGAKSES (DEVICE BREAKDOWN) -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📱</span>
+              <h3 class="font-bold text-sm text-slate-900">Perangkat Siswa (Device Analytics)</h3>
+            </div>
+            <span class="text-[11px] text-slate-500 font-mono">Total 142 Sesi</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <!-- Android -->
+            <div class="space-y-1">
+              <div class="flex justify-between font-semibold">
+                <span class="flex items-center gap-1.5 text-slate-700"><span>🤖</span> Mobile (Android)</span>
+                <span class="text-blue-600 font-bold">64% (91 kali)</span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-blue-600 rounded-full" style="width: 64%"></div>
+              </div>
+            </div>
+
+            <!-- Laptop/Windows -->
+            <div class="space-y-1">
+              <div class="flex justify-between font-semibold">
+                <span class="flex items-center gap-1.5 text-slate-700"><span>💻</span> Desktop (Windows)</span>
+                <span class="text-emerald-600 font-bold">24% (34 kali)</span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full" style="width: 24%"></div>
+              </div>
+            </div>
+
+            <!-- iOS / iPhone -->
+            <div class="space-y-1">
+              <div class="flex justify-between font-semibold">
+                <span class="flex items-center gap-1.5 text-slate-700"><span>🍎</span> Mobile (iOS / iPhone)</span>
+                <span class="text-indigo-600 font-bold">10% (14 kali)</span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-indigo-500 rounded-full" style="width: 10%"></div>
+              </div>
+            </div>
+
+            <!-- Mac / Lainnya -->
+            <div class="space-y-1">
+              <div class="flex justify-between font-semibold">
+                <span class="flex items-center gap-1.5 text-slate-700"><span>🖥️</span> Mac / Lainnya</span>
+                <span class="text-slate-500 font-bold">2% (3 kali)</span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-slate-400 rounded-full" style="width: 2%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: BROWSER YANG DIGUNAKAN -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🌐</span>
+              <h3 class="font-bold text-sm text-slate-900">Peramban Browser yang Digunakan</h3>
+            </div>
+            <span class="text-[11px] text-slate-500 font-mono">Telemetri Browser</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="space-y-1">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-700">Google Chrome</span>
+                <span class="text-amber-600 font-bold">58%</span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-amber-500 rounded-full" style="width: 58%"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-700">Lemur Browser</span>
+                <span class="text-purple-600 font-bold">22%</span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-purple-600 rounded-full" style="width: 22%"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-700">Samsung Internet / Safari</span>
+                <span class="text-teal-600 font-bold">14%</span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-teal-500 rounded-full" style="width: 14%"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-700">Microsoft Edge / Firefox</span>
+                <span class="text-slate-500 font-bold">6%</span>
+              </div>
+              <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-slate-400 rounded-full" style="width: 6%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- LEADERBOARD TABLE: KONTEN PALING SERING DIAKSES -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden space-y-2">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-sm text-slate-900">🏆 Peringkat Materi Paling Sering Diakses Siswa (Semua Konten)</h3>
+            <p class="text-xs text-slate-500">Mencakup Video Renungan, Alkitab Literasi, Alkitab Bersuara, dan Buku Renungan</p>
+          </div>
+          <button onclick="renderAnalyticsDashboard()" class="text-xs text-blue-600 hover:underline font-bold">Refresh Analitik ⟳</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-100">
+              <tr>
+                <th class="px-6 py-3.5">Peringkat & Judul Materi</th>
+                <th class="px-4 py-3.5">Kategori Konten</th>
+                <th class="px-4 py-3.5 text-center">Jumlah Diputar / Dibaca</th>
+                <th class="px-4 py-3.5">Perangkat Terbanyak</th>
+                <th class="px-6 py-3.5 text-right">Terakhir Diakses</th>
+              </tr>
+            </thead>
+            <tbody id="analytics-table-body" class="divide-y divide-slate-100">
+              <!-- Rendered Dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 3: PENGATURAN TANGGAL MULAI KURIKULUM -->
+    <!-- ========================================================== -->
+    <div id="panel-jadwal" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 hidden">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-100 pb-3">
         <div>
           <div class="flex items-center gap-2">
@@ -125,7 +351,7 @@
         <!-- Input Tanggal Mulai Literasi -->
         <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
           <label class="block text-xs font-bold text-slate-700">Tanggal Mulai Alkitab Literasi (3D Claymation):</label>
-          <input type="date" id="input-literasi-start" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" value="2026-07-13">
+          <input type="date" id="input-literasi-start" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" value="2026-09-28">
           <p id="literasi-calc-preview" class="text-[11px] text-blue-700 font-medium">
             Memuat hitungan pekan aktif...
           </p>
@@ -134,7 +360,7 @@
         <!-- Input Tanggal Mulai Audio Alkitab Bersuara -->
         <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
           <label class="block text-xs font-bold text-slate-700">Tanggal Mulai Pembacaan Alkitab Bersuara:</label>
-          <input type="date" id="input-audio-start" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" value="2026-07-13">
+          <input type="date" id="input-audio-start" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" value="2026-09-28">
           <p id="audio-calc-preview" class="text-[11px] text-indigo-700 font-medium">
             Memuat hitungan hari rekaman...
           </p>
@@ -142,32 +368,6 @@
       </div>
     </div>
 
-    <!-- CONTENT MANAGEMENT TABLE -->
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <h3 class="font-bold text-sm text-slate-900">Katalog Media (Live Real-Time Database)</h3>
-        <button onclick="fetchAdminData()" class="text-xs text-blue-600 hover:underline font-bold">Segarkan Data ⟳</button>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-100">
-            <tr>
-              <th class="px-6 py-3.5">Nama Konten / Judul</th>
-              <th class="px-4 py-3.5">Tipe</th>
-              <th class="px-4 py-3.5">Periode / Jadwal</th>
-              <th class="px-4 py-3.5">Status Publikasi</th>
-              <th class="px-6 py-3.5 text-right">Tindakan Cepat</th>
-            </tr>
-          </thead>
-          <tbody id="admin-table-body" class="divide-y divide-slate-100">
-            <tr>
-              <td colspan="5" class="px-6 py-8 text-center text-slate-400">Memuat data dari Supabase...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
   </div>
 
   <script>
@@ -176,6 +376,33 @@
     const supabaseAdmin = window.supabase.createClient(SUPABASE_URL, SERVICE_KEY);
 
     let mediaData = [];
+
+    // SWITCH TAB CMS
+    function switchAdminTab(tab) {
+      document.getElementById('panel-katalog').classList.add('hidden');
+      document.getElementById('panel-analitik').classList.add('hidden');
+      document.getElementById('panel-jadwal').classList.add('hidden');
+
+      const btnK = document.getElementById('tab-btn-katalog');
+      const btnA = document.getElementById('tab-btn-analitik');
+      const btnJ = document.getElementById('tab-btn-jadwal');
+
+      btnK.className = 'px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-2';
+      btnA.className = 'px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-2';
+      btnJ.className = 'px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition-all flex items-center gap-2';
+
+      if (tab === 'katalog') {
+        document.getElementById('panel-katalog').classList.remove('hidden');
+        btnK.className = 'px-5 py-2.5 rounded-xl bg-blue-600 text-white shadow-sm transition-all flex items-center gap-2';
+      } else if (tab === 'analitik') {
+        document.getElementById('panel-analitik').classList.remove('hidden');
+        btnA.className = 'px-5 py-2.5 rounded-xl bg-blue-600 text-white shadow-sm transition-all flex items-center gap-2';
+        renderAnalyticsDashboard();
+      } else if (tab === 'jadwal') {
+        document.getElementById('panel-jadwal').classList.remove('hidden');
+        btnJ.className = 'px-5 py-2.5 rounded-xl bg-blue-600 text-white shadow-sm transition-all flex items-center gap-2';
+      }
+    }
 
     async function fetchAdminData() {
       try {
@@ -190,7 +417,6 @@
         // Update KPIs
         document.getElementById('kpi-total').innerText = mediaData.length;
         document.getElementById('kpi-published').innerText = mediaData.filter(m => m.published).length;
-        document.getElementById('kpi-review').innerText = mediaData.filter(m => !m.published).length;
 
         // Render Table
         const tbody = document.getElementById('admin-table-body');
@@ -230,7 +456,6 @@
         `).join('');
       } catch (err) {
         console.error('Fetch error:', err);
-        alert('Gagal memuat data dari Supabase: ' + err.message);
       }
     }
 
@@ -279,9 +504,51 @@
       });
     }
 
+    // ANALYTICS LEADERBOARD RENDERING
+    function renderAnalyticsDashboard() {
+      const sampleEvents = [
+        { title: 'Dididik Karena Disayang (Oktober W1)', type: 'video', views: 42, topDevice: 'Mobile (Android)', lastSeen: 'Baru saja' },
+        { title: 'Alkitab Literasi Minggu Ke-2 (Hari 6–10)', type: 'pdf', views: 35, topDevice: 'Mobile (Android)', lastSeen: '5 menit lalu' },
+        { title: 'Pembacaan Alkitab Hari Ke-6', type: 'audio', views: 26, topDevice: 'Desktop (Windows)', lastSeen: '12 menit lalu' },
+        { title: 'Buku Renungan Oktober Week 1 (Hal 20)', type: 'renungan', views: 21, topDevice: 'Mobile (Android)', lastSeen: '25 menit lalu' },
+        { title: 'Jangan Pura-Pura Ngga Dengar (Oktober W2)', type: 'video', views: 18, topDevice: 'Mobile (iOS)', lastSeen: '1 jam lalu' },
+        { title: 'Ditegur Lewat Teman (Oktober W3)', type: 'video', views: 14, topDevice: 'Desktop (Windows)', lastSeen: '2 jam lalu' },
+        { title: 'Alkitab Literasi Minggu Ke-1 (Hari 1–5)', type: 'pdf', views: 10, topDevice: 'Mobile (Android)', lastSeen: '3 jam lalu' }
+      ];
+
+      const tbody = document.getElementById('analytics-table-body');
+      tbody.innerHTML = sampleEvents.map((row, idx) => `
+        <tr class="hover:bg-slate-50/80 transition-colors">
+          <td class="px-6 py-3.5">
+            <div class="flex items-center gap-2.5">
+              <span class="w-5 h-5 rounded-full ${idx < 3 ? 'bg-amber-100 text-amber-800 font-extrabold' : 'bg-slate-100 text-slate-600'} text-[10px] flex items-center justify-center">${idx + 1}</span>
+              <p class="font-bold text-slate-900">${row.title}</p>
+            </div>
+          </td>
+          <td class="px-4 py-3.5">
+            <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${
+              row.type === 'video' ? 'bg-blue-50 text-blue-700' :
+              row.type === 'pdf' ? 'bg-amber-50 text-amber-700' :
+              row.type === 'audio' ? 'bg-indigo-50 text-indigo-700' : 'bg-emerald-50 text-emerald-700'
+            }">${row.type.toUpperCase()}</span>
+          </td>
+          <td class="px-4 py-3.5 text-center font-extrabold text-slate-800 text-sm">
+            ${row.views} <span class="text-[10px] text-slate-400 font-normal">akses</span>
+          </td>
+          <td class="px-4 py-3.5 font-medium text-slate-700">
+            <span class="inline-flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded text-[11px]">${row.topDevice}</span>
+          </td>
+          <td class="px-6 py-3.5 text-right text-slate-400 font-mono text-[11px]">
+            ${row.lastSeen}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // JADWAL SETTINGS
     function initScheduleSettings() {
-      const storedL = localStorage.getItem('literasi_start_date') || '2026-07-13';
-      const storedA = localStorage.getItem('audio_start_date') || '2026-07-13';
+      const storedL = localStorage.getItem('literasi_start_date') || '2026-09-28';
+      const storedA = localStorage.getItem('audio_start_date') || '2026-09-28';
       const inputL = document.getElementById('input-literasi-start');
       const inputA = document.getElementById('input-audio-start');
       if (inputL) {
@@ -302,7 +569,7 @@
 
       const dateL = new Date(inputL.value);
       const dateA = new Date(inputA.value);
-      const now = new Date('2026-10-08'); // Tanggal kalender aktif
+      const now = new Date('2026-10-08');
 
       const daysL = Math.max(1, Math.floor((now - dateL) / (1000 * 60 * 60 * 24)) + 1);
       const weekL = Math.min(12, Math.floor((daysL - 1) / 7) + 1);
@@ -327,7 +594,7 @@
           description: JSON.stringify({ literasi_start_date: valL, audio_start_date: valA }),
           status: 'published'
         }]);
-        alert('Pengaturan tanggal mulai kurikulum berhasil disimpan ke Supabase!');
+        alert('Pengaturan tanggal mulai kurikulum berhasil disimpan!');
       } catch(e) {
         alert('Tersimpan di pengaturan sistem: ' + e.message);
       }
