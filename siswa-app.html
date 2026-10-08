@@ -646,7 +646,7 @@
       }
     }
 
-    // REAL AUDIO PLAYER (ALKITAB BERSUARA ASLI)
+    // REAL AUDIO PLAYER (ALKITAB BERSUARA ASLI - SUPABASE STORAGE CDN)
     function playAudio(title) {
       const audioTitle = title || 'Pembacaan Alkitab Hari Ke-6 (TK - Kelas 1 SD)';
       const playerBar = document.getElementById('mini-audio-player');
@@ -654,7 +654,9 @@
       playerBar.classList.remove('translate-y-32');
 
       const audioEl = document.getElementById('active-audio-player');
-      audioEl.src = './videos/alkitab_bersuara_hari_06.mp3';
+      // Link audio resmi live di Supabase Storage (Bebas CORS, HTTP Range 206)
+      audioEl.src = 'https://obaqikxwpektussmyjqh.supabase.co/storage/v1/object/public/littlelight/audio/hari_06.mp3';
+      audioEl.load();
       audioEl.play().catch(e => console.log('Audio autoplay prevented, ready to play:', e));
       document.getElementById('btn-audio-toggle').innerText = '⏸';
     }
@@ -726,6 +728,13 @@
       'renungan_master.pdf': '1Kt0Zre-xT2YJaGd7rGDkrah-jcTvTDf5'
     };
 
+    // FAST DIRECT CDN STREAMING VIA SUPABASE STORAGE (BEBAS CORS & BEBAS BUG MOBILE)
+    const SUPABASE_MEDIA_URLS = {
+      'dididik karena disayang': 'https://obaqikxwpektussmyjqh.supabase.co/storage/v1/object/public/littlelight/videos/dididik_720p.mp4',
+      'jangan pura-pura ngga dengar': 'https://obaqikxwpektussmyjqh.supabase.co/storage/v1/object/public/littlelight/videos/jangan_pura_pura_720p.mp4',
+      'ditegur lewat teman': 'https://obaqikxwpektussmyjqh.supabase.co/storage/v1/object/public/littlelight/videos/ditegur_teman_720p.mp4'
+    };
+
     function openVideoDetail(identifier) {
       let item = allMedia.find(m => 
         m.id === identifier || 
@@ -749,8 +758,18 @@
       document.getElementById('modal-video-desc').innerText = item.description || '';
 
       const targetTitle = (item.title || '').toLowerCase();
-      let driveId = item.drive_file_id;
+      
+      // 1. Cek direct stream di Supabase CDN (Kecepatan tinggi, bebas CORS)
+      let streamUrl = null;
+      for (const [key, url] of Object.entries(SUPABASE_MEDIA_URLS)) {
+        if (targetTitle.includes(key)) {
+          streamUrl = url;
+          break;
+        }
+      }
 
+      // 2. Drive ID untuk tombol buka eksternal
+      let driveId = item.drive_file_id;
       if (!driveId || driveId.startsWith('vid-') || driveId.length < 20) {
         for (const [key, id] of Object.entries(DRIVE_MEDIA_MAP)) {
           if (targetTitle.includes(key.toLowerCase())) {
@@ -762,8 +781,7 @@
       if (!driveId) driveId = '1JOF9ze8rD5TRzxYfCebQQeQSk6RIH3bc';
 
       const videoPlayer = document.getElementById('active-video-player');
-      const directStreamUrl = `https://drive.usercontent.google.com/download?id=${driveId}&export=download`;
-      videoPlayer.src = directStreamUrl;
+      videoPlayer.src = streamUrl || `https://drive.usercontent.google.com/download?id=${driveId}&export=download`;
       videoPlayer.load();
       videoPlayer.play().catch(e => console.log('Autoplay handled:', e));
 
