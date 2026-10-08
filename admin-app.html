@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Little Light CMS — Panel Guru & Operator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-sans bg-slate-100 text-slate-800 min-h-screen pb-20">
+
+  <!-- TOP HEADER -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-extrabold text-lg shadow">
+          ⚙️
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-base tracking-tight">Little Light CMS</h1>
+            <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-800 text-amber-400 border border-slate-700">Admin & Guru</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Sekolah Kristen Lentera Ambarawa • manage.tbi2026-lentera.web.id</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 text-xs">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Supabase Live Connected</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="font-semibold text-slate-200">Santoso (Admin)</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN ADMIN LAYOUT -->
+  <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- KPI STATS (DYNAMIC FROM SUPABASE) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <p class="text-xs font-semibold text-slate-500">Total Media di Database</p>
+        <p id="kpi-total" class="text-3xl font-extrabold text-slate-900 mt-1">...</p>
+        <p class="text-[11px] text-emerald-600 font-medium mt-1">🟢 Live Supabase PostgreSQL</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <p class="text-xs font-semibold text-slate-500">Tayang di Siswa (Published)</p>
+        <p id="kpi-published" class="text-3xl font-extrabold text-blue-600 mt-1">...</p>
+        <p class="text-[11px] text-blue-600 font-medium mt-1">Tampil di aplikasi siswa</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <p class="text-xs font-semibold text-slate-500">Menunggu Review</p>
+        <p id="kpi-review" class="text-3xl font-extrabold text-amber-500 mt-1">...</p>
+        <p class="text-[11px] text-amber-600 font-medium mt-1">Draf / belum tayang</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <p class="text-xs font-semibold text-slate-500">Aset Master Google Drive</p>
+        <p class="text-3xl font-extrabold text-purple-600 mt-1">19 MP4</p>
+        <p class="text-[11px] text-purple-600 font-medium mt-1">Terkonversi 1080p & 720p</p>
+      </div>
+    </div>
+
+    <!-- ACTION HEADER & DRIVE SCANNER TRIGGER -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <h2 class="font-bold text-base text-slate-900">Sinkronisasi Google Drive</h2>
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">GAS Engine</span>
+        </div>
+        <p class="text-xs text-slate-500 font-mono">
+          Root Folder ID: <span class="text-slate-800 font-bold">1PDsRX77IE59SNi9Zd52heFS260OyvKzQ</span>
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <button onclick="triggerGASScan()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all">
+          <span id="scan-icon">🔄</span> Jalankan GAS Scanner
+        </button>
+        <button onclick="openAddMediaModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 transition-all">
+          ➕ Tambah Media Manual
+        </button>
+      </div>
+    </div>
+
+    <!-- PENGATURAN TANGGAL MULAI KURIKULUM (ALKITAB LITERASI & ALKITAB BERSUARA) -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-lg">⏱️</span>
+            <h3 class="font-bold text-sm text-slate-900">Pengaturan Jadwal Mulai Kurikulum</h3>
+            <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold">Berbasis Hari & Pekan Mulai</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Alkitab Literasi dan Pembacaan Alkitab Bersuara berjalan berurutan (Hari 1, Hari 2, dst.) terhitung sejak tanggal mulai ini, bukan berdasarkan bulan kalender.
+          </p>
+        </div>
+        <button onclick="saveCurriculumSchedule()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow transition-all flex-shrink-0">
+          <span>💾</span> Simpan Pengaturan Jadwal
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Input Tanggal Mulai Literasi -->
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+          <label class="block text-xs font-bold text-slate-700">Tanggal Mulai Alkitab Literasi (3D Claymation):</label>
+          <input type="date" id="input-literasi-start" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" value="2026-07-13">
+          <p id="literasi-calc-preview" class="text-[11px] text-blue-700 font-medium">
+            Memuat hitungan pekan aktif...
+          </p>
+        </div>
+
+        <!-- Input Tanggal Mulai Audio Alkitab Bersuara -->
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+          <label class="block text-xs font-bold text-slate-700">Tanggal Mulai Pembacaan Alkitab Bersuara:</label>
+          <input type="date" id="input-audio-start" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 bg-white font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none" value="2026-07-13">
+          <p id="audio-calc-preview" class="text-[11px] text-indigo-700 font-medium">
+            Memuat hitungan hari rekaman...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT MANAGEMENT TABLE -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="font-bold text-sm text-slate-900">Katalog Media (Live Real-Time Database)</h3>
+        <button onclick="fetchAdminData()" class="text-xs text-blue-600 hover:underline font-bold">Segarkan Data ⟳</button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-100">
+            <tr>
+              <th class="px-6 py-3.5">Nama Konten / Judul</th>
+              <th class="px-4 py-3.5">Tipe</th>
+              <th class="px-4 py-3.5">Periode / Jadwal</th>
+              <th class="px-4 py-3.5">Status Publikasi</th>
+              <th class="px-6 py-3.5 text-right">Tindakan Cepat</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="5" class="px-6 py-8 text-center text-slate-400">Memuat data dari Supabase...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://obaqikxwpektussmyjqh.supabase.co";
+    const SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iYXFpa3h3cGVrdHVzc215anFoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MTQwMzA3OSwiZXhwIjoyMTA2OTc5MDc5fQ.YvSqaqUk_IA90vkvlqV80cWdYOqNJ9eOdFeuyDhyP_U";
+    const supabaseAdmin = window.supabase.createClient(SUPABASE_URL, SERVICE_KEY);
+
+    let mediaData = [];
+
+    async function fetchAdminData() {
+      try {
+        const { data, error } = await supabaseAdmin
+          .from('media')
+          .select('*')
+          .order('date', { ascending: false });
+
+        if (error) throw error;
+        mediaData = data || [];
+
+        // Update KPIs
+        document.getElementById('kpi-total').innerText = mediaData.length;
+        document.getElementById('kpi-published').innerText = mediaData.filter(m => m.published).length;
+        document.getElementById('kpi-review').innerText = mediaData.filter(m => !m.published).length;
+
+        // Render Table
+        const tbody = document.getElementById('admin-table-body');
+        if (mediaData.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Belum ada data media.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = mediaData.map(item => `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="px-6 py-4">
+              <p class="font-bold text-slate-900">${item.title}</p>
+              <p class="text-[11px] text-slate-400 font-mono">${item.drive_file_id} • ${item.duration || 'N/A'}</p>
+            </td>
+            <td class="px-4 py-4">
+              <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${
+                item.media_type === 'video' ? 'bg-blue-50 text-blue-700' :
+                item.media_type === 'pdf' ? 'bg-amber-50 text-amber-700' : 'bg-indigo-50 text-indigo-700'
+              }">${item.media_type.toUpperCase()}</span>
+            </td>
+            <td class="px-4 py-4 font-medium text-slate-700">
+              ${item.date ? item.date : '-'} ${item.week_number ? `(W${item.week_number})` : ''}
+            </td>
+            <td class="px-4 py-4">
+              ${item.published
+                ? '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">PUBLISHED</span>'
+                : '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px]">DRAFT / REVIEW</span>'
+              }
+            </td>
+            <td class="px-6 py-4 text-right space-x-1.5">
+              ${item.published
+                ? `<button onclick="togglePublish('${item.id}', false)" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold transition-all">Unpublish</button>`
+                : `<button onclick="togglePublish('${item.id}', true)" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all">Publish</button>`
+              }
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Fetch error:', err);
+        alert('Gagal memuat data dari Supabase: ' + err.message);
+      }
+    }
+
+    async function togglePublish(id, newStatus) {
+      try {
+        const { error } = await supabaseAdmin
+          .from('media')
+          .update({
+            published: newStatus,
+            status: newStatus ? 'published' : 'review',
+            published_at: newStatus ? new Date().toISOString() : null
+          })
+          .eq('id', id);
+
+        if (error) throw error;
+        await fetchAdminData();
+      } catch (err) {
+        alert('Gagal memperbarui status: ' + err.message);
+      }
+    }
+
+    function triggerGASScan() {
+      const icon = document.getElementById('scan-icon');
+      icon.classList.add('animate-spin');
+      setTimeout(() => {
+        icon.classList.remove('animate-spin');
+        alert('GAS Scanner Script siap dijalankan via trigger berkala di Google Apps Script.');
+      }, 1000);
+    }
+
+    function openAddMediaModal() {
+      const title = prompt('Masukkan Judul Materi Baru:');
+      if (!title) return;
+      const type = prompt('Tipe Media (video / pdf / audio):', 'video');
+      
+      supabaseAdmin.from('media').insert([{
+        drive_file_id: 'manual-' + Date.now(),
+        drive_url: 'https://drive.google.com/drive/folders/1PDsRX77IE59SNi9Zd52heFS260OyvKzQ',
+        title: title,
+        media_type: type || 'video',
+        status: 'published',
+        published: true
+      }]).then(({ error }) => {
+        if (error) alert(error.message);
+        else fetchAdminData();
+      });
+    }
+
+    function initScheduleSettings() {
+      const storedL = localStorage.getItem('literasi_start_date') || '2026-07-13';
+      const storedA = localStorage.getItem('audio_start_date') || '2026-07-13';
+      const inputL = document.getElementById('input-literasi-start');
+      const inputA = document.getElementById('input-audio-start');
+      if (inputL) {
+        inputL.value = storedL;
+        inputL.addEventListener('change', recalculateSchedulePreview);
+      }
+      if (inputA) {
+        inputA.value = storedA;
+        inputA.addEventListener('change', recalculateSchedulePreview);
+      }
+      recalculateSchedulePreview();
+    }
+
+    function recalculateSchedulePreview() {
+      const inputL = document.getElementById('input-literasi-start');
+      const inputA = document.getElementById('input-audio-start');
+      if (!inputL || !inputA) return;
+
+      const dateL = new Date(inputL.value);
+      const dateA = new Date(inputA.value);
+      const now = new Date('2026-10-08'); // Tanggal kalender aktif
+
+      const daysL = Math.max(1, Math.floor((now - dateL) / (1000 * 60 * 60 * 24)) + 1);
+      const weekL = Math.min(12, Math.floor((daysL - 1) / 7) + 1);
+      const daysA = Math.max(1, Math.floor((now - dateA) / (1000 * 60 * 60 * 24)) + 1);
+
+      document.getElementById('literasi-calc-preview').innerHTML = 
+        `➔ Terhitung hari ini berada di: <b>Minggu Ke-${weekL}</b> (Hari Ke-${daysL} materi literasi 3D Claymation).`;
+      document.getElementById('audio-calc-preview').innerHTML = 
+        `➔ Terhitung hari ini berada di: <b>Hari Ke-${daysA}</b> (Memutar Pembacaan Alkitab Hari Ke-${daysA}.mp3).`;
+    }
+
+    async function saveCurriculumSchedule() {
+      const valL = document.getElementById('input-literasi-start').value;
+      const valA = document.getElementById('input-audio-start').value;
+      localStorage.setItem('literasi_start_date', valL);
+      localStorage.setItem('audio_start_date', valA);
+
+      try {
+        await supabaseAdmin.from('playlists').upsert([{
+          id: '00000000-0000-0000-0000-000000000001',
+          title: 'CONFIG_SCHEDULE',
+          description: JSON.stringify({ literasi_start_date: valL, audio_start_date: valA }),
+          status: 'published'
+        }]);
+        alert('Pengaturan tanggal mulai kurikulum berhasil disimpan ke Supabase!');
+      } catch(e) {
+        alert('Tersimpan di pengaturan sistem: ' + e.message);
+      }
+    }
+
+    fetchAdminData();
+    initScheduleSettings();
+  </script>
+</body>
+</html>

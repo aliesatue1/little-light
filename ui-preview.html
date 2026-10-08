@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Little Light — Sekolah Kristen Lentera Ambarawa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            kids: ['"Nunito"', 'sans-serif']
+          },
+          colors: {
+            lentera: {
+              gold: '#F59E0B',
+              amber: '#D97706',
+              yellow: '#FDE68A',
+              navy: '#1E3A8A',
+              blue: '#2563EB',
+              sky: '#E0F2FE',
+              cream: '#FFFDF7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #F8FAFC; color: #1E293B; }
+    .glass-card { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(8px); }
+    .tab-active { background: #F59E0B; color: #FFFFFF; font-weight: 700; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); }
+  </style>
+</head>
+<body class="font-sans min-h-screen pb-32">
+
+  <!-- TOP BAR / APP SWITCHER -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-amber-100 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center text-white text-xl shadow-md">
+          ✨
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-kids text-xl font-extrabold text-blue-950 tracking-tight">Little Light</h1>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">tbi2026-lentera.web.id</span>
+          </div>
+          <p class="text-xs text-slate-500 font-medium">Sekolah Kristen Lentera Ambarawa</p>
+        </div>
+      </div>
+
+      <!-- Mode Toggle -->
+      <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+        <button onclick="switchMode('user')" id="btn-mode-user" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-blue-900 shadow-sm">
+          🧒 Mode Siswa
+        </button>
+        <button onclick="switchMode('admin')" id="btn-mode-admin" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
+          ⚙️ CMS Guru / Admin
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================== -->
+  <!-- USER APP VIEW (MODE SISWA) -->
+  <!-- ========================================================== -->
+  <main id="view-user" class="max-w-6xl mx-auto px-4 pt-6 space-y-8">
+
+    <!-- DAILY HERO GREETING -->
+    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-800 text-white p-6 md:p-8 shadow-xl">
+      <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-amber-400/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="space-y-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur text-xs font-semibold text-amber-300 border border-white/10">
+            <span>📅 Kamis, 8 Oktober 2026</span> • <span>Minggu Ke-1 Oktober</span>
+          </div>
+          <h2 class="font-kids text-2xl md:text-3xl font-extrabold text-white">Halo Sahabat Little Light! 🌟</h2>
+          <p class="text-slate-200 text-sm max-w-xl">
+            Mari mulai hari ini dengan mendengarkan firman Tuhan, menonton renungan seru, dan belajar bersama Guneo, Lili, dan Joana!
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <button onclick="openVideoModal('4_Oktober 2026_Week 1_Dididik Karena Disayang')" class="px-5 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-blue-950 font-kids font-extrabold text-sm transition-all transform active:scale-95 shadow-lg flex items-center gap-2">
+            <span>▶</span> Tonton Renungan Hari Ini
+          </button>
+          <button onclick="playAudio('Kejadian 1 — Penciptaan Semesta')" class="px-4 py-3 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-sm transition-all border border-white/20 flex items-center gap-2">
+            <span>🎧</span> Putar Audio
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVIGATION PILLS -->
+    <nav class="flex overflow-x-auto gap-2 pb-2 scrollbar-none">
+      <button onclick="filterUserTab('semua')" class="tab-btn tab-active px-5 py-2.5 rounded-2xl text-xs whitespace-nowrap transition-all" data-tab="semua">
+        🌟 Hari Ini (Semua)
+      </button>
+      <button onclick="filterUserTab('video')" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-2xl text-xs whitespace-nowrap border border-slate-200 transition-all" data-tab="video">
+        🎬 Renungan Video
+      </button>
+      <button onclick="filterUserTab('literasi')" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-2xl text-xs whitespace-nowrap border border-slate-200 transition-all" data-tab="literasi">
+        📖 Alkitab Literasi (3D Claymation)
+      </button>
+      <button onclick="filterUserTab('audio')" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-2xl text-xs whitespace-nowrap border border-slate-200 transition-all" data-tab="audio">
+        🎧 Alkitab Bersuara
+      </button>
+      <button onclick="filterUserTab('renungan')" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-2xl text-xs whitespace-nowrap border border-slate-200 transition-all" data-tab="renungan">
+        📝 Renungan Fase B & C
+      </button>
+    </nav>
+
+    <!-- CONTENT GRID (HARI INI) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- CARD 1: RENUNGAN VIDEO ANAK -->
+      <div class="content-item group bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="video">
+        <div class="space-y-4">
+          <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-900 flex items-center justify-center group-hover:scale-[1.01] transition-transform">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20"></div>
+            <div class="w-12 h-12 rounded-full bg-amber-400 text-blue-950 flex items-center justify-center font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
+              ▶
+            </div>
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-blue-600/90 text-white text-[11px] font-bold backdrop-blur">
+              Renungan Video
+            </span>
+            <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/60 text-white text-[10px] font-medium">
+              05:42 • 720p HD
+            </span>
+          </div>
+
+          <div>
+            <span class="text-xs font-bold text-amber-600">Oktober 2026 • Week 1</span>
+            <h3 class="font-kids font-extrabold text-lg text-slate-900 mt-0.5">Dididik Karena Disayang</h3>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">
+              Teguran ayah dan ibu bukan karena benci, tapi karena kasih yang tulus agar kita bertumbuh jadi anak yang bijak.
+            </p>
+          </div>
+        </div>
+
+        <button onclick="openVideoModal('4_Oktober 2026_Week 1_Dididik Karena Disayang')" class="mt-4 w-full py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
+          <span>Nonton Sekarang</span> →
+        </button>
+      </div>
+
+      <!-- CARD 2: ALKITAB LITERASI -->
+      <div class="content-item group bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="literasi">
+        <div class="space-y-4">
+          <div class="relative rounded-2xl overflow-hidden aspect-video bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center border border-amber-200/60">
+            <div class="text-center p-4">
+              <span class="text-3xl">📚</span>
+              <p class="font-kids font-extrabold text-amber-900 text-sm mt-1">Cerita Alkitab Anak</p>
+              <p class="text-[11px] text-amber-700">3D Claymation PAUD/TK</p>
+            </div>
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-amber-500 text-white text-[11px] font-bold">
+              Alkitab Literasi
+            </span>
+            <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-amber-900/40 text-amber-100 text-[10px] font-medium">
+              Minggu Ke-9 • PDF
+            </span>
+          </div>
+
+          <div>
+            <span class="text-xs font-bold text-blue-600">Hari Ke-41 s/d 45</span>
+            <h3 class="font-kids font-extrabold text-lg text-slate-900 mt-0.5">Tuhan Yesus Memberkati Anak-anak</h3>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">
+              Format 3D claymation flipbook dengan bahasa yang mudah dimengerti anak usia dini.
+            </p>
+          </div>
+        </div>
+
+        <button onclick="openPdfModal('Minggu Ke-9')" class="mt-4 w-full py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
+          <span>Buka Flipbook Literasi</span> 📖
+        </button>
+      </div>
+
+      <!-- CARD 3: ALKITAB BERSUARA -->
+      <div class="content-item group bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-category="audio">
+        <div class="space-y-4">
+          <div class="relative rounded-2xl overflow-hidden aspect-video bg-gradient-to-tr from-indigo-900 to-blue-700 flex items-center justify-center text-white">
+            <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-xl backdrop-blur group-hover:scale-110 transition-transform">
+              🎧
+            </div>
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-indigo-600/90 text-white text-[11px] font-bold">
+              Alkitab Bersuara
+            </span>
+            <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/40 text-slate-200 text-[10px]">
+              Audio Dramatisasi
+            </span>
+          </div>
+
+          <div>
+            <span class="text-xs font-bold text-indigo-600">Perjanjian Lama • Pasal 1</span>
+            <h3 class="font-kids font-extrabold text-lg text-slate-900 mt-0.5">Kejadian 1 — Penciptaan</h3>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">
+              Pada mulanya Allah menciptakan langit dan bumi. Dengarkan narasi audio yang menyejukkan hati.
+            </p>
+          </div>
+        </div>
+
+        <button onclick="playAudio('Kejadian 1 — Penciptaan Semesta')" class="mt-4 w-full py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
+          <span>Putar Sekarang</span> 🔊
+        </button>
+      </div>
+
+      <!-- CARD 4: RENUNGAN FASE B -->
+      <div class="content-item bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between" data-category="renungan">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">
+              Renungan Fase B (Kelas 3-4)
+            </span>
+            <span class="text-xs text-slate-400">8 Okt 2026</span>
+          </div>
+          <h3 class="font-kids font-extrabold text-base text-slate-900">Mata yang Mau Melihat Kebaikan</h3>
+          <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-2xl border border-slate-100">
+            "Mata adalah pelita tubuh. Jika matamu baik, teranglah seluruh tubuhmu." (Matius 6:22)
+          </p>
+        </div>
+        <button onclick="alert('Renungan Fase B terbuka!')" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs transition-colors">
+          Baca Teks Lengkap & Doa
+        </button>
+      </div>
+
+      <!-- CARD 5: RENUNGAN FASE C -->
+      <div class="content-item bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between" data-category="renungan">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded-full bg-purple-100 text-purple-800 text-[11px] font-bold">
+              Renungan Fase C (Kelas 5-6)
+            </span>
+            <span class="text-xs text-slate-400">8 Okt 2026</span>
+          </div>
+          <h3 class="font-kids font-extrabold text-base text-slate-900">Menjaga Integritas di Era Digital</h3>
+          <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-2xl border border-slate-100">
+            "Siapa bersih kelakuannya, aman jalannya, tetapi siapa berliku-liku jalannya, akan diketahui." (Amsal 10:9)
+          </p>
+        </div>
+        <button onclick="alert('Renungan Fase C terbuka!')" class="mt-4 w-full py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-800 font-bold text-xs transition-colors">
+          Baca Teks Lengkap & Doa
+        </button>
+      </div>
+
+      <!-- CARD 6: PLAYLIST MINGGU INI -->
+      <div class="content-item bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-5 border border-amber-200 flex flex-col justify-between" data-category="video">
+        <div class="space-y-3">
+          <span class="px-2.5 py-1 rounded-full bg-amber-200/80 text-amber-900 text-[11px] font-bold">
+            Daftar Putar Bulan Ini
+          </span>
+          <h3 class="font-kids font-extrabold text-base text-amber-950">Seri Renungan Oktober 2026</h3>
+          <ul class="space-y-2 text-xs text-amber-900">
+            <li class="flex items-center gap-2 font-bold text-amber-800">
+              <span>▶</span> Week 1: Dididik Karena Disayang
+            </li>
+            <li class="flex items-center gap-2 opacity-75">
+              <span>⚪</span> Week 2: Jangan Pura-Pura Ngga Dengar
+            </li>
+            <li class="flex items-center gap-2 opacity-75">
+              <span>⚪</span> Week 3: Ditegur Lewat Teman
+            </li>
+          </ul>
+        </div>
+        <button onclick="filterUserTab('video')" class="mt-4 w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs transition-colors">
+          Lihat Semua Video (19 Materi)
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================== -->
+  <!-- ADMIN CMS VIEW (GURU / OPERATOR) -->
+  <!-- ========================================================== -->
+  <main id="view-admin" class="max-w-6xl mx-auto px-4 pt-6 space-y-6 hidden">
+    
+    <!-- ADMIN STATS BANNER -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <p class="text-xs font-semibold text-slate-500">Total Media</p>
+        <p class="text-2xl font-extrabold text-slate-900 mt-1">28</p>
+        <p class="text-[11px] text-emerald-600 font-medium mt-0.5">Google Drive synced</p>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <p class="text-xs font-semibold text-slate-500">Tayang (Published)</p>
+        <p class="text-2xl font-extrabold text-blue-600 mt-1">19</p>
+        <p class="text-[11px] text-slate-400 font-medium mt-0.5">Aktif di User App</p>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <p class="text-xs font-semibold text-slate-500">Perlu Review</p>
+        <p class="text-2xl font-extrabold text-amber-500 mt-1">4</p>
+        <p class="text-[11px] text-amber-600 font-medium mt-0.5">Menunggu approval</p>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <p class="text-xs font-semibold text-slate-500">Master di Drive</p>
+        <p class="text-2xl font-extrabold text-purple-600 mt-1">19 MOV</p>
+        <p class="text-[11px] text-purple-600 font-medium mt-0.5">100% terkonversi MP4</p>
+      </div>
+    </div>
+
+    <!-- ACTION BAR -->
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+      <div class="flex items-center gap-2">
+        <button onclick="alert('Drive Scanner GAS memeriksa folder 1PDsRX77IE59SNi9Zd52heFS260OyvKzQ...')" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all">
+          <span>🔄</span> Scan Google Drive
+        </button>
+        <button onclick="alert('Buka dialog tambah link Google Drive manual')" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all">
+          <span>➕</span> Tambah URL Drive
+        </button>
+      </div>
+      <div class="text-xs text-slate-500">
+        Folder Master: <code class="bg-slate-100 px-2 py-0.5 rounded text-[11px] text-slate-700 font-mono">1PDsRX77IE59SNi9Zd52heFS260OyvKzQ</code>
+      </div>
+    </div>
+
+    <!-- CONTENT TABLE -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="font-bold text-sm text-slate-800">Daftar Konten & Status Publikasi</h3>
+        <span class="text-xs text-slate-400">Database: Supabase PostgreSQL</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-100">
+            <tr>
+              <th class="px-6 py-3">Nama Konten / File</th>
+              <th class="px-4 py-3">Tipe</th>
+              <th class="px-4 py-3">Jadwal / Periode</th>
+              <th class="px-4 py-3">Status</th>
+              <th class="px-6 py-3 text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr>
+              <td class="px-6 py-4">
+                <p class="font-bold text-slate-900">4_Oktober 2026_Week 1_Dididik Karena Disayang</p>
+                <p class="text-[11px] text-slate-400 font-mono">MP4 720p (26 MB) • Drive ID: 1a8B...k9P</p>
+              </td>
+              <td class="px-4 py-4"><span class="px-2 py-1 rounded bg-blue-50 text-blue-700 font-semibold">Video</span></td>
+              <td class="px-4 py-4">Oktober 2026 • Week 1</td>
+              <td class="px-4 py-4"><span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold">PUBLISHED</span></td>
+              <td class="px-6 py-4 text-right space-x-1">
+                <button class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">Tinjau</button>
+                <button class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-700 font-medium">Unpublish</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4">
+                <p class="font-bold text-slate-900">4_Oktober 2026_Week 2_Jangan Pura-Pura Ngga Dengar</p>
+                <p class="text-[11px] text-slate-400 font-mono">MP4 720p (24 MB) • Drive ID: 1b9C...m2Q</p>
+              </td>
+              <td class="px-4 py-4"><span class="px-2 py-1 rounded bg-blue-50 text-blue-700 font-semibold">Video</span></td>
+              <td class="px-4 py-4">Oktober 2026 • Week 2</td>
+              <td class="px-4 py-4"><span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold">REVIEW</span></td>
+              <td class="px-6 py-4 text-right space-x-1">
+                <button class="px-2.5 py-1 rounded bg-emerald-600 text-white font-bold">Publish</button>
+                <button class="px-2.5 py-1 rounded bg-slate-100 text-slate-700">Edit</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4">
+                <p class="font-bold text-slate-900">9 Alkitab Literasi _ Minggu Ke-9 - Hari 41-45.pdf</p>
+                <p class="text-[11px] text-slate-400 font-mono">PDF (12 MB) • 3D Claymation Cerita Alkitab PAUD-TK</p>
+              </td>
+              <td class="px-4 py-4"><span class="px-2 py-1 rounded bg-amber-50 text-amber-700 font-semibold">Literasi</span></td>
+              <td class="px-4 py-4">Minggu Ke-9</td>
+              <td class="px-4 py-4"><span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold">PUBLISHED</span></td>
+              <td class="px-6 py-4 text-right space-x-1">
+                <button class="px-2.5 py-1 rounded bg-slate-100 text-slate-700">Baca</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4">
+                <p class="font-bold text-slate-900">Kejadian 1 — Penciptaan Semesta.mp3</p>
+                <p class="text-[11px] text-slate-400 font-mono">MP3 (4.2 MB) • Audio Dramatisasi</p>
+              </td>
+              <td class="px-4 py-4"><span class="px-2 py-1 rounded bg-indigo-50 text-indigo-700 font-semibold">Audio</span></td>
+              <td class="px-4 py-4">Perjanjian Lama</td>
+              <td class="px-4 py-4"><span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold">PUBLISHED</span></td>
+              <td class="px-6 py-4 text-right space-x-1">
+                <button class="px-2.5 py-1 rounded bg-slate-100 text-slate-700">Putar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================== -->
+  <!-- FLOATING AUDIO MINI-PLAYER (STICKY BOTTOM) -->
+  <!-- ========================================================== -->
+  <div id="mini-audio-player" class="fixed bottom-4 left-4 right-4 max-w-2xl mx-auto bg-slate-900/95 backdrop-blur-lg text-white rounded-3xl p-4 shadow-2xl border border-white/10 flex items-center justify-between gap-4 z-50 transition-all transform translate-y-32">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-lg flex-shrink-0">
+        🎧
+      </div>
+      <div class="truncate">
+        <p id="audio-title" class="font-kids font-bold text-xs truncate">Kejadian 1 — Penciptaan Semesta</p>
+        <p class="text-[10px] text-slate-400">Alkitab Bersuara • Lentera</p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <button class="text-slate-400 hover:text-white text-xs">⏮</button>
+      <button onclick="togglePlayAudio()" id="btn-audio-toggle" class="w-9 h-9 rounded-full bg-amber-400 text-blue-950 flex items-center justify-center font-bold text-sm shadow">
+        ⏸
+      </button>
+      <button class="text-slate-400 hover:text-white text-xs">⏭</button>
+      <button onclick="closeAudio()" class="text-slate-400 hover:text-slate-200 text-xs ml-2">✕</button>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- VIDEO MODAL POPUP -->
+  <!-- ========================================================== -->
+  <div id="video-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 rounded-3xl overflow-hidden max-w-3xl w-full border border-white/10 shadow-2xl space-y-4 p-4 text-white">
+      <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <div>
+          <span class="text-xs font-bold text-amber-400">Renungan Video Anak • Little Light</span>
+          <h3 id="modal-video-title" class="font-kids font-extrabold text-base">Dididik Karena Disayang</h3>
+        </div>
+        <button onclick="closeVideoModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold">
+          ✕
+        </button>
+      </div>
+
+      <!-- Player Simulation -->
+      <div class="aspect-video bg-black rounded-2xl relative flex items-center justify-center overflow-hidden border border-white/5">
+        <div class="text-center space-y-2">
+          <div class="w-16 h-16 rounded-full bg-amber-400 text-blue-950 flex items-center justify-center font-bold text-2xl mx-auto shadow-lg animate-pulse">
+            ▶
+          </div>
+          <p class="text-xs text-slate-300">Simulasi Pemutar Video HTML5 (MP4 H.264 + AAC + faststart)</p>
+          <span class="inline-block text-[11px] bg-white/10 px-2.5 py-1 rounded-full text-slate-300 font-mono">
+            Direct Delivery from Drive / CDN
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2">
+        <button class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white">← Video Sebelumnya</button>
+        <span>Oktober 2026 • Minggu Ke-1</span>
+        <button class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white">Video Berikutnya →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mode Switcher
+    function switchMode(mode) {
+      const viewUser = document.getElementById('view-user');
+      const viewAdmin = document.getElementById('view-admin');
+      const btnUser = document.getElementById('btn-mode-user');
+      const btnAdmin = document.getElementById('btn-mode-admin');
+
+      if (mode === 'user') {
+        viewUser.classList.remove('hidden');
+        viewAdmin.classList.add('hidden');
+        btnUser.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-blue-900 shadow-sm';
+        btnAdmin.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900';
+      } else {
+        viewUser.classList.add('hidden');
+        viewAdmin.classList.remove('hidden');
+        btnAdmin.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-blue-900 shadow-sm';
+        btnUser.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900';
+      }
+    }
+
+    // Filter User Tabs
+    function filterUserTab(category) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.dataset.tab === category) {
+          btn.className = 'tab-btn tab-active px-5 py-2.5 rounded-2xl text-xs whitespace-nowrap transition-all';
+        } else {
+          btn.className = 'tab-btn bg-white hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-2xl text-xs whitespace-nowrap border border-slate-200 transition-all';
+        }
+      });
+
+      const items = document.querySelectorAll('.content-item');
+      items.forEach(item => {
+        if (category === 'semua' || item.dataset.category === category) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Audio Mini-Player
+    function playAudio(title) {
+      const player = document.getElementById('mini-audio-player');
+      document.getElementById('audio-title').innerText = title;
+      player.classList.remove('translate-y-32');
+    }
+    function togglePlayAudio() {
+      const btn = document.getElementById('btn-audio-toggle');
+      btn.innerText = btn.innerText === '⏸' ? '▶' : '⏸';
+    }
+    function closeAudio() {
+      document.getElementById('mini-audio-player').classList.add('translate-y-32');
+    }
+
+    // Video Modal
+    function openVideoModal(title) {
+      document.getElementById('modal-video-title').innerText = title.replace(/_/g, ' ');
+      document.getElementById('video-modal').classList.remove('hidden');
+    }
+    function closeVideoModal() {
+      document.getElementById('video-modal').classList.add('hidden');
+    }
+
+    function openPdfModal(info) {
+      alert('Membuka PDF Flipbook: ' + info + ' dengan PDF.js reader');
+    }
+  </script>
+</body>
+</html>

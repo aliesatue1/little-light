@@ -1,0 +1,26 @@
+# Little Light — Git Ignore
+# Master storage tetap di Google Drive (1PDsRX77IE59SNi9Zd52heFS260OyvKzQ)
+
+# File Media Besar (Dilarang masuk Git demi batas 100MB GitHub)
+videos/
+docs/*.pdf
+*.mp4
+*.mov
+*.m4v
+*.mp3
+*.zip
+
+# Dependencies & Build
+node_modules/
+.vercel/
+dist/
+.output/
+
+# Environment Kredensial
+.env
+.env.local
+.env*.local
+
+# System Files
+Thumbs.db
+.DS_Store
